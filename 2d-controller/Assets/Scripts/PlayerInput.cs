@@ -23,24 +23,31 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
+        // Get input raw values from Unity Input GetRawAxis (i'm using GetRawAxis becauase I don't want acceleration
+        // I might dampen the movement though - I need to check what it looks like. 
 
-        if (controller.collisionsInfo.above || controller.collisionsInfo.below)
-        {
-            velocity.y = 0;
-        }
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-        if(Input.GetButtonDown("Jump") && controller.collisionsInfo.below)
-        {
+        // if we are colliding above or below, set the Y velocity to 0; 
+        if (controller.collisionsInfo.above || controller.collisionsInfo.below) {
+            velocity.y = 0;
+        }
+
+        // if player pressed Jump and is grounded then add jump velocity
+        if(Input.GetButtonDown("Jump") && controller.collisionsInfo.below) {
             velocity.y = jumpVelocity;
         }
-        if(Input.GetButtonUp("Jump") && velocity.y > 0 && !controller.collisionsInfo.climbingSlope)
-        {
+
+        // If the player released the jump button while still in Jump (and not climbing a slope) start landing quicker
+        if(Input.GetButtonUp("Jump") && velocity.y > 0 && !controller.collisionsInfo.climbingSlope) {
             velocity.y *= 0.3f;
         }
 
+        // Apply velocity values. 
         velocity.x = input.x * moveSpeed; 
         velocity.y += gravity * Time.deltaTime;
+
+        // Call move function (defined in the Controller2D class. 
         controller.Move(velocity * Time.deltaTime);
     }
 }
