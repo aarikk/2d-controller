@@ -135,7 +135,7 @@ public class Controller2D : MonoBehaviour
 
                     // Calculate the right X velocity if while climbing we encounter a vertical collision
                     // slopeAngle = theta 
-                    // Velocity Y is of corse the Y position. 
+                    // Velocity Y = y. 
                     // The original equasion is Tan(theta) = Y/X
                     // Y / Tan(theta)  = X position
                     velocity.x = velocity.y / Mathf.Tan(collisionsInfo.slopeAngle * Mathf.Deg2Rad) * Mathf.Sign(velocity.x);
