@@ -29,17 +29,17 @@ public class PlayerInput : MonoBehaviour
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         // if we are colliding above or below, set the Y velocity to 0; 
-        if (controller.collisionsInfo.above || controller.collisionsInfo.below) {
+        if (controller.playerState.colUp || controller.playerState.colDown) {
             velocity.y = 0;
         }
 
         // if player pressed Jump and is grounded then add jump velocity
-        if(Input.GetButtonDown("Jump") && controller.collisionsInfo.below) {
+        if(Input.GetButtonDown("Jump") && controller.playerState.colDown) {
             velocity.y = jumpVelocity;
         }
 
         // If the player released the jump button while still in Jump (and not climbing a slope) start landing quicker
-        if(Input.GetButtonUp("Jump") && velocity.y > 0 && !controller.collisionsInfo.climbingSlope) {
+        if(Input.GetButtonUp("Jump") && velocity.y > 0 && !controller.playerState.climbingSlope) {
             velocity.y *= 0.3f;
         }
 

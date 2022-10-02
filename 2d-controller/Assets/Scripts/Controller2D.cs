@@ -27,7 +27,7 @@ public class Controller2D : MonoBehaviour
     public LayerMask collisionMask;
 
     // State Machine (Collision Info) - > This should be the basis for a state machine in the future.
-    public CollisionInfo collisionsInfo;
+    public CollisionInfo playerState;
 
     void Start()
     {
@@ -41,7 +41,7 @@ public class Controller2D : MonoBehaviour
     {
         
         UpdateRaycastOrigins(); // Update Raycast origins to fit the new position of the player
-        collisionsInfo.Reset(); // Resets all the states (sets everything to false) 
+        playerState.Reset(); // Resets all the states (sets everything to false) 
 
         // Checks for collisions (Unless no movement)
         if (velocity.x != 0) HorizontalCollisions(ref velocity);
@@ -81,7 +81,7 @@ public class Controller2D : MonoBehaviour
                 if (i == 0 && slopeAngle <= maxClimbAngle) //If this is the first colllision - and the slope is climbable
                 {
                     float distanceToSloapeStart = 0;
-                    if(slopeAngle != collisionsInfo.slopeAngleOld) // If the player collided with a new slope
+                    if(slopeAngle != playerState.slopeAngleOld) // If the player collided with a new slope
                     {
                         distanceToSloapeStart = hit.distance - skinWidth; // Get the distnace to the new slope (reducing skin width)
                         velocity.x -= distanceToSloapeStart * directionX; // Use velocity at the slope
@@ -91,20 +91,20 @@ public class Controller2D : MonoBehaviour
                     //If after calculating the new direction - move the player back onto the slope. 
                     velocity.x += distanceToSloapeStart * directionX;
                 }
-                if (!collisionsInfo.climbingSlope || slopeAngle > maxClimbAngle)
+                if (!playerState.climbingSlope || slopeAngle > maxClimbAngle)
                 {
                     velocity.x = (hit.distance - skinWidth) * directionX;
                     rayLength = hit.distance;
-                    if (collisionsInfo.climbingSlope) {
+                    if (playerState.climbingSlope) {
                         // Calculate the right X velocity if while climbing we encounter a horizontal unclimbable barrier.
                         // slopeAngle = theta 
                         // Velocity Y is of corse the Y position. 
                         // The original equasion is Tan(theta) = Y/X
                         // Y / Tan(theta)  = X position
-                        velocity.y = Mathf.Tan(collisionsInfo.slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(velocity.x);
+                        velocity.y = Mathf.Tan(playerState.slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(velocity.x);
                     }
-                    collisionsInfo.left = directionX == -1;
-                    collisionsInfo.right = directionX == 1;
+                    playerState.colLeft = directionX == -1;
+                    playerState.colRight = directionX == 1;
                 }
             }
         }
@@ -131,20 +131,20 @@ public class Controller2D : MonoBehaviour
                 velocity.y = (hit.distance * skinWidth) * directionY;
                 rayLength = hit.distance;
                 
-                if (collisionsInfo.climbingSlope) {
+                if (playerState.climbingSlope) {
 
                     // Calculate the right X velocity if while climbing we encounter a vertical collision
                     // slopeAngle = theta 
                     // Velocity Y = y. 
                     // The original equasion is Tan(theta) = Y/X
                     // Y / Tan(theta)  = X position
-                    velocity.x = velocity.y / Mathf.Tan(collisionsInfo.slopeAngle * Mathf.Deg2Rad) * Mathf.Sign(velocity.x);
+                    velocity.x = velocity.y / Mathf.Tan(playerState.slopeAngle * Mathf.Deg2Rad) * Mathf.Sign(velocity.x);
                 }
-                collisionsInfo.below = directionY == -1;
-                collisionsInfo.above = directionY == 1;
+                playerState.colDown = directionY == -1;
+                playerState.colUp = directionY == 1;
             }
         }
-        if (collisionsInfo.climbingSlope)
+        if (playerState.climbingSlope)
         {
             float directionX = Mathf.Sign(velocity.x);
             rayLength = Mathf.Abs(velocity.x) + skinWidth;
@@ -154,10 +154,10 @@ public class Controller2D : MonoBehaviour
             if(hit)
             {
                 float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-                if (slopeAngle != collisionsInfo.slopeAngle)
+                if (slopeAngle != playerState.slopeAngle)
                 {
                     velocity.x = (hit.distance - skinWidth) * directionX;
-                    collisionsInfo.slopeAngle = slopeAngle;
+                    playerState.slopeAngle = slopeAngle;
                 }
 
             }
@@ -182,9 +182,9 @@ public class Controller2D : MonoBehaviour
         {
             velocity.y = climbVelocityY; 
             velocity.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign(velocity.x); // Get new X with formula
-            collisionsInfo.below = true;
-            collisionsInfo.climbingSlope = true;
-            collisionsInfo.slopeAngle = slopeAngle;
+            playerState.colDown = true;
+            playerState.climbingSlope = true;
+            playerState.slopeAngle = slopeAngle;
         }
     }
 
@@ -227,14 +227,14 @@ public class Controller2D : MonoBehaviour
     #region State Machine (collision info struct)
     public struct CollisionInfo
     {
-        public bool above, below;
-        public bool left, right;
+        public bool colUp, colDown;
+        public bool colLeft, colRight;
         public bool climbingSlope;
         public float slopeAngle;
         public float slopeAngleOld; 
         public void Reset()
         {
-            above = below = left = right = climbingSlope = false;
+            colUp = colDown = colLeft = colRight = climbingSlope = false;
             slopeAngleOld = slopeAngle;
             slopeAngle = 0;
         }
