@@ -10,6 +10,9 @@ public class PlayerInput : MonoBehaviour
     float jumpHeight = 4f;
     float timeToJumpApex = 0.4f;
     float moveSpeed = 6f;
+    float bufferJumpTimer = 0.1f;
+    bool jumpBuffered; 
+    float jumpClicked;
     public Vector2 input; 
     float gravity;
     float jumpVelocity;
@@ -38,12 +41,19 @@ public class PlayerInput : MonoBehaviour
         }
 
         // if player pressed Jump and is grounded then add jump velocity
-        if(Input.GetButtonDown("Jump") && controller.playerState.colDown) {
-            velocity.y = jumpVelocity;
+        if (Input.GetButtonDown("Jump"))
+        {
+            jumpClicked = Time.time;
+            jumpBuffered = true;
         }
-
+         if (jumpClicked + bufferJumpTimer >= Time.time && controller.playerState.colDown && jumpBuffered)
+        {
+            velocity.y = jumpVelocity;
+            jumpBuffered = false;
+        }
+            
         // If the player released the jump button while still in Jump (and not climbing a slope) start landing quicker
-        if(Input.GetButtonUp("Jump") && velocity.y > 0 && !controller.playerState.climbingSlope) {
+        if (Input.GetButtonUp("Jump") && velocity.y > 0 && !controller.playerState.climbingSlope) {
             velocity.y *= 0.3f;
         }
 

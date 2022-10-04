@@ -228,8 +228,6 @@ public class Controller2D : MonoBehaviour
             }
         }
     }
-
-    
     #endregion
 
     // Setup Raycast origins and rays.
