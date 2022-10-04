@@ -10,7 +10,7 @@ public class PlayerInput : MonoBehaviour
     float jumpHeight = 4f;
     float timeToJumpApex = 0.4f;
     float moveSpeed = 6f;
-
+    public Vector2 input; 
     float gravity;
     float jumpVelocity;
     public Vector3 velocity; 
@@ -26,7 +26,7 @@ public class PlayerInput : MonoBehaviour
         // Get input raw values from Unity Input GetRawAxis (i'm using GetRawAxis becauase I don't want acceleration
         // I might dampen the movement though - I need to check what it looks like. 
 
-        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         // if we are colliding above or below, set the Y velocity to 0; 
         if (controller.playerState.colUp || controller.playerState.colDown) {
