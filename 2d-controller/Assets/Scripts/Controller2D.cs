@@ -169,7 +169,7 @@ public class Controller2D : MonoBehaviour
    
 
     // Climb Slope funciton is used in both the vertical and horizontal collision functions.
-    #region Climp Slope Function
+    #region Handling Slopes
     void ClimbSlope(ref Vector3 velocity, float slopeAngle)
     {
         // This function uses trigonometry to find the Y and X positions
@@ -190,28 +190,37 @@ public class Controller2D : MonoBehaviour
             playerState.slopeAngle = slopeAngle;
         }
     }
-    #region Descending Slope
+   
 
     void DescendSlope(ref Vector3 velocity)
     {
+        // Send a ray from the direction opposite to the movement
         float directionX = Mathf.Sign(velocity.x);
         Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, Mathf.Infinity, collisionMask);
-        if (hit)
+
+
+        if (hit) //Check if there's a hit
         {
+            //calculate the slope angle if ther's a hit
             float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-            if (slopeAngle != 0 && slopeAngle <= maxClimbAngle)
+            //if the slope is not a flat plane and if it's at or below the slope descent angle do:. 
+            if (slopeAngle != 0 && slopeAngle <= maxDescendAngle)
             {
+                //This makes sure that the slope is in the direction of the movement
                 if (Mathf.Sign(hit.normal.x) == directionX) 
                 { 
+                   //This makes sure that the distnace we need to travel is on the slope
                     if(hit.distance - skinWidth <=  Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(velocity.x))
                     {
+                        //Calculate movement vectors. 
                         float moveDistance = Mathf.Abs(velocity.x); // Get the distnace (or Hypotenuse) 
                         float descendVelocityY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance; // Get X vector using formula above
                         velocity.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance;
                         velocity.y -= descendVelocityY;
 
-                        playerState.slopeAngle = slopeAngle;
+                        //Update state
+                        playerState.slopeAngle = slopeAngle; 
                         playerState.colDown = true;
                         playerState.descendingSlope = true;
                     }
@@ -220,7 +229,7 @@ public class Controller2D : MonoBehaviour
         }
     }
 
-    #endregion 
+    
     #endregion
 
     // Setup Raycast origins and rays.
