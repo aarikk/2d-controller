@@ -47,12 +47,13 @@ public class PlayerInput : MonoBehaviour
             velocity.y = 0;
         }
 
-        // if player pressed Jump and is grounded then add jump velocity
+        // When a player presses jump - save jump click time and enable the jump buffer bool
         if (Input.GetButtonDown("Jump"))
         {
             jumpClicked = Time.time;
-            jumpBuffered = true;
+            jumpBuffered = true; // this bool is used so that we don't jump on game initialization.
         }
+        //if we're withing the buffer jump range, and we're grounded and we had a jump click - then jump. 
          if (jumpClicked + bufferJumpTimer >= Time.time && controller.playerState.colDown && jumpBuffered)
         {
             velocity.y = jumpVelocity;
