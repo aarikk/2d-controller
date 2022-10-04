@@ -7,16 +7,23 @@ public class PlayerInput : MonoBehaviour
 {
     Controller2D controller;
 
+    //Meta
+    public Vector2 input;
+    float gravity;
+    float jumpVelocity;
+    public Vector3 velocity;
+
+    //Movement
+    float moveSpeed = 6f;
+
+    //Jumping
     float jumpHeight = 4f;
     float timeToJumpApex = 0.4f;
-    float moveSpeed = 6f;
     float bufferJumpTimer = 0.1f;
     bool jumpBuffered; 
     float jumpClicked;
-    public Vector2 input; 
-    float gravity;
-    float jumpVelocity;
-    public Vector3 velocity; 
+
+   
     void Start()
     {
         controller = GetComponent<Controller2D>();
