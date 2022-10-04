@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
-using UnityEditor.U2D.Path;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
