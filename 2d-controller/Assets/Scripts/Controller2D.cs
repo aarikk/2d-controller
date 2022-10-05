@@ -114,10 +114,8 @@ public class Controller2D : MonoBehaviour
     #region Vertical Collision
     void VerticalCollisions(ref Vector3 velocity)
     {
-
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + skinWidth;
-
 
         for (int i = 0; i < verticalRayCount; i++)
         {
@@ -165,8 +163,6 @@ public class Controller2D : MonoBehaviour
         }
     }
     #endregion
-
-   
 
     // Climb Slope funciton is used in both the vertical and horizontal collision functions.
     #region Handling Slopes
@@ -228,6 +224,8 @@ public class Controller2D : MonoBehaviour
             }
         }
     }
+
+
     #endregion
 
     // Setup Raycast origins and rays.
@@ -254,7 +252,6 @@ public class Controller2D : MonoBehaviour
 
         horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
         verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
-
     }
   
     struct RaycastOrigins
@@ -270,16 +267,26 @@ public class Controller2D : MonoBehaviour
         public bool colUp, colDown;
         public bool colLeft, colRight;
         public bool climbingSlope, descendingSlope;
+        public bool isJumping;
+        public bool isFalling; 
         public float slopeAngle;
         public float slopeAngleOld; 
+       
 
         public void Reset()
         {
-            colUp = colDown = colLeft = colRight = climbingSlope = descendingSlope  = false;
+            colUp = false;
+            colDown = false; 
+            colLeft = false; 
+            colRight = false; 
+            climbingSlope = false; 
+            descendingSlope  = false;
+            isJumping = false;
+            isFalling = false;
+
             slopeAngleOld = slopeAngle;
             slopeAngle = 0;
         }
     }
-
     #endregion
 }
